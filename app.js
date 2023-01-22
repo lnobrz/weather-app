@@ -1,11 +1,14 @@
-const request = require("postman-request");
+const geocode = require("./utils/geocode");
+const forecast = require("./utils/forecast");
 
-const url =
-  "http://api.weatherstack.com/current?access_key=abf49d528e84d757b88ad02edb54a4b7&query=37.8267,-122.4233&units=m";
-
-request({ url: url, json: true }, (error, response) => {
-  const data = response.body;
-  console.log(
-    `${data.current.weather_descriptions[0]}. It is currently ${data.current.temperature} degrees. It feels like ${data.current.feelslike} degress.`
-  );
+geocode("Boston", (error, data) => {
+  if (error) {
+    console.log(error);
+  } else {
+    forecast(data.latitude, data.longitude, (error, forecastData) => {
+      return data
+        ? console.log(data.location, forecastData)
+        : console.log(error);
+    });
+  }
 });
